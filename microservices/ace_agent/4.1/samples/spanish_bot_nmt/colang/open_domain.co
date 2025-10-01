@@ -1,0 +1,10 @@
+flow user asked open domain query
+  user said "What is the human life expectancy in the United States?"
+    or user said "Who is the Prime Minister of India?"
+    or user said "What is the capital of Spain?"
+    or user said "How far is the sun from the earth?"
+
+flow open domain
+  user asked open domain query
+  $response = ..."Reply to user's previous query. Enclose the reply in quotes"
+  bot say "{$response}"

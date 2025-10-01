@@ -1,0 +1,68 @@
+# User intent flows
+flow user added food drink items to order
+  """User wants to order food or drinks"""
+  user intent "food_order.add_item"
+
+flow user removed food drink items from order
+  """User wants to remove a food or drink item from the order"""
+  user intent "food_order.remove_item"
+
+flow user swapped food drink items from order
+  """User wants to swap a food or drink item from the order"""
+  user intent "food_order.swap_item"
+
+flow user requested empty cart
+  """User wants to empty the order / cart """
+  user said "Clear the cart"
+    or user said "Delete my cart"
+    or user said "Remove all items from my cart"
+    or user said "Delete my order"
+    or user said "Cancel my order"
+    or user said (regex("(?i)\b(clear|delete|empty|reset)\\s+(my|the)?\\s*(cart|order)\b"))
+
+# Flows related to cart management
+flow handle adding items to order
+  user added food drink items to order
+  log "Adding item to cart"
+
+  $information = await InvokeFulfillmentAction(endpoint="food_order/add_item", request_type="post")
+  log "Response from Plugin - add action result: $information={$information}"
+  if $information
+    bot say $information
+  else
+    bot say something like "I could not add the requested items. We ran into some technical issues."
+
+flow handle removing items from order
+  user removed food drink items from order
+  log "Removing item from cart"
+
+  $information = await InvokeFulfillmentAction(endpoint="food_order/remove_item", request_type="post")
+  log "Response from Plugin - remove action result: $information={$information}"
+  if $information
+    bot say $information
+  else
+    bot say something like "I could not remove the requested items. We ran into some technical issues."
+
+flow handle swapping items from order
+  user swapped food drink items from order
+  log "Swapping items in cart"
+
+  $information = await InvokeFulfillmentAction(endpoint="food_order/replace_items", request_type="post")
+  log "Response from Plugin - swap action result: $information={$information}"
+  if $information
+    bot say $information
+  else
+    bot say something like "I could not swap the requested items. We ran into some technical issues."
+
+flow handle emptying cart
+  user requested empty cart
+  log "Clearing the items from the cart"
+
+  global $user_id
+
+  $information = await InvokeFulfillmentAction(endpoint="food_order/clear_cart", request_type="post", user_id=$user_id)
+  log "Response from Plugin - clear cart action result: $information={$information}"
+  if $information
+    bot say "Sure, I have cleared your cart"
+  else
+    bot say "Sorry, I couldn't clear the cart"

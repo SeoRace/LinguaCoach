@@ -1,0 +1,15 @@
+flow user makes filler statement
+  """User says a filler question like 'I see' or 'Hi' """
+  user intent "food_order.filler"
+
+flow user goes off topic
+  """User asks about something unrelated to food ordering"""
+  user intent "food_order.nomatch"
+
+flow answer filler statement
+  user makes filler statement
+  llm continue interaction
+
+flow answer off topic question
+  user goes off topic
+  bot say "I can only answer questions related to food ordering."

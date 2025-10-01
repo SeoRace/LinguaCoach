@@ -1,0 +1,24 @@
+flow user expressed greeting
+  user said "Good morning"
+    or user said  "Good afternoon"
+    or user said  "Good night"
+    or user said  "Goodbye"
+    or user said  "Thank you"
+    or user said  "Hello"
+
+flow user asked how are you
+  user said "How are you?"
+
+flow bot greets to user
+  user expressed greeting
+  $response = ..."Reply to user's previous query. Enclose the reply in quotes"
+  bot say "{$response}"
+
+flow bot reply to how are you
+  user asked how are you
+  $response = ..."Reply to user's previous query. Enclose the reply in quotes"
+  bot say "{$response}"
+
+flow general
+  activate bot greets to user
+  activate bot reply to how are you
